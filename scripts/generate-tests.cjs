@@ -1386,9 +1386,14 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
+const finalCases = testCases.map(tc => ({
+  ...tc,
+  author: "AI generated"
+}));
+
 fs.writeFileSync(
   path.join(dataDir, 'generated-tests.json'),
-  JSON.stringify(testCases, null, 2),
+  JSON.stringify(finalCases, null, 2),
   'utf-8'
 );
 

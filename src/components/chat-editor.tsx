@@ -100,7 +100,10 @@ export const ChatEditor: React.FC<ChatEditorProps> = ({
             <Trash2 size={13} /> Delete Chat
           </button>
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", width: "100%" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+          <span style={{ fontSize: "12px", color: "var(--color-mute)" }}>
+            Author: <strong style={{ color: "var(--color-ink)" }}>{testCase.author || "Unknown"}</strong>
+          </span>
           <span className="badge">{chat.length} messages</span>
         </div>
       </div>

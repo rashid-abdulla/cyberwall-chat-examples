@@ -18,4 +18,5 @@ export interface TestCase {
   type: TestCaseType; // Happy, Edge, Failure, or Abuse
   chat: ChatMessage[];
   expectedBehavior: string[];
+  author: string;
 }
