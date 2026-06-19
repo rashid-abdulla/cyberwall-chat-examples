@@ -261,7 +261,7 @@ export default function App() {
             
             <div>
               <h1 style={{ fontSize: "20px", fontWeight: 900, fontFamily: "var(--font-display)", letterSpacing: "-0.02em", display: "flex", alignItems: "center", gap: "8px" }}>
-                Kerala Police Cyberwall Test Suite
+                Cyberwall AI Example chats
                 {saveStatus === "saving" && (
                   <span style={{ fontSize: "11px", fontWeight: 500, padding: "2px 8px", borderRadius: "12px", backgroundColor: "#fef3c7", color: "#d97706", display: "inline-flex", alignItems: "center", gap: "4px" }}>
                     <span className="save-pulse-dot" style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#d97706" }}></span>
