@@ -1420,5 +1420,47 @@
       "Decline processing and explain supported types (text, voice, images)"
     ],
     "author": "AI generated"
+  },
+  {
+    "id": "CUSTOM-001",
+    "category": "Phone Number Analysis",
+    "objective": "New test case objective",
+    "scenario": "Describe the user scenario here",
+    "language": "en",
+    "inputType": "text",
+    "type": "happy",
+    "chat": [
+      {
+        "role": "user",
+        "content": "Is this number safe?"
+      },
+      {
+        "role": "assistant",
+        "content": "Trust Score: 50/100 (Neutral)\n\nReasoning: We found no adverse reports."
+      }
+    ],
+    "expectedBehavior": [],
+    "author": "Rashid (Nysaclan)"
+  },
+  {
+    "id": "CUSTOM-002",
+    "category": "Phone Number Analysis",
+    "objective": "New test case objective",
+    "scenario": "Describe the user scenario here",
+    "language": "en",
+    "inputType": "text",
+    "type": "happy",
+    "chat": [
+      {
+        "role": "user",
+        "content": "Is this number safe?"
+      },
+      {
+        "role": "assistant",
+        "content": "Trust Score: 50/100 (Neutral)\n\nReasoning: We found no adverse reports."
+      }
+    ],
+    "expectedBehavior": [],
+    "author": "Rashid (Nysaclan)"
   }
 ]

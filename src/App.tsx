@@ -58,6 +58,7 @@ export default function App() {
   const [userNameInput, setUserNameInput] = useState("");
   const [availableUsers, setAvailableUsers] = useState<string[]>([]);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [userProfileOpen, setUserProfileOpen] = useState(false);
 
   // Fetch available users on mount
   useEffect(() => {
@@ -115,8 +116,8 @@ export default function App() {
     return saved !== null ? saved === "true" : false;
   });
 
-  // Export dropdown state
-  const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
+  // Suite actions (Import/Export) dropdown state
+  const [suiteActionsOpen, setSuiteActionsOpen] = useState(false);
 
   // Filter test cases reactively
   const filteredTestCases = useMemo(() => {
@@ -238,15 +239,6 @@ export default function App() {
     downloadXLSXFile(testCases);
   };
 
-  const handleRegenerate = () => {
-    if (window.confirm("Are you sure you want to reset the test suite? Any custom modifications will be lost.")) {
-      setTestCases(initialTests as TestCase[]);
-      if (initialTests.length > 0) {
-        setSelectedId(initialTests[0].id);
-      }
-    }
-  };
-
   return (
     <div className={`app-container ${sidebarOpen ? "sidebar-expanded" : "sidebar-collapsed"}`}>
       {/* Column 1: Test Suite View & Sidebar */}
@@ -256,7 +248,6 @@ export default function App() {
         selectedId={selectedId}
         onSelect={handleSelectTestCase}
         onAddTestCase={handleAddTestCase}
-        onRegenerate={handleRegenerate}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         selectedCategory={selectedCategory}
@@ -312,82 +303,49 @@ export default function App() {
               <Menu size={20} />
             </button>
             
-            <div>
-              <h1 style={{ fontSize: "20px", fontWeight: 900, fontFamily: "var(--font-display)", letterSpacing: "-0.02em", display: "flex", alignItems: "center", gap: "8px" }}>
-                Cyberwall AI Example chats
-                {saveStatus === "saving" && (
-                  <span style={{ fontSize: "11px", fontWeight: 500, padding: "2px 8px", borderRadius: "12px", backgroundColor: "#fef3c7", color: "#d97706", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                    <span className="save-pulse-dot" style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#d97706" }}></span>
-                    Saving...
-                  </span>
-                )}
-                {saveStatus === "saved" && (
-                  <span style={{ fontSize: "11px", fontWeight: 500, padding: "2px 8px", borderRadius: "12px", backgroundColor: "#dcfce7", color: "#16a34a", display: "inline-flex", alignItems: "center", gap: "4px" }} title="Your changes are synced back to generated-tests.json on disk">
-                    <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#16a34a" }}></span>
-                    Synced to disk
-                  </span>
-                )}
-                {saveStatus === "error" && (
-                  <span style={{ fontSize: "11px", fontWeight: 500, padding: "2px 8px", borderRadius: "12px", backgroundColor: "#fee2e2", color: "#dc2626", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                    <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#dc2626" }}></span>
-                    Sync Error
-                  </span>
-                )}
-              </h1>
-              <p style={{ fontSize: "12px", marginTop: "2px" }}>
-                Showing {filteredTestCases.length} of {testCases.length} simulation chats
-              </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              {saveStatus === "saving" && (
+                <span style={{ fontSize: "11px", fontWeight: 500, padding: "2px 8px", borderRadius: "12px", backgroundColor: "#fef3c7", color: "#d97706", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <span className="save-pulse-dot" style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#d97706" }}></span>
+                  Saving...
+                </span>
+              )}
+              {saveStatus === "saved" && (
+                <span style={{ fontSize: "11px", fontWeight: 500, padding: "2px 8px", borderRadius: "12px", backgroundColor: "#dcfce7", color: "#16a34a", display: "inline-flex", alignItems: "center", gap: "4px" }} title="Your changes are synced back to generated-tests.json on disk">
+                  <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#16a34a" }}></span>
+                  Synced to disk
+                </span>
+              )}
+              {saveStatus === "error" && (
+                <span style={{ fontSize: "11px", fontWeight: 500, padding: "2px 8px", borderRadius: "12px", backgroundColor: "#fee2e2", color: "#dc2626", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#dc2626" }}></span>
+                  Sync Error
+                </span>
+              )}
+              <span style={{ fontSize: "12px", color: "var(--color-mute)", marginLeft: "4px" }}>
+                ({filteredTestCases.length} of {testCases.length} chats)
+              </span>
             </div>
           </div>
 
           <div style={{ display: "flex", gap: "10px", alignItems: "center", position: "relative" }}>
-            {/* User Session Info */}
-            {currentUser && (
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginRight: "12px", fontSize: "13px", color: "var(--color-body)", borderRight: "1px solid #dcdfd9", paddingRight: "12px" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                  <User size={14} />
-                  <span>Logged as: <strong>{currentUser}</strong></span>
-                </span>
-                <button
-                  type="button"
-                  onClick={handleSwitchUser}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    padding: "2px 6px",
-                    fontSize: "11px",
-                    color: "var(--color-primary)",
-                    cursor: "pointer",
-                    textDecoration: "underline"
-                  }}
-                >
-                  Switch
-                </button>
-              </div>
-            )}
-
-            {/* Import Button */}
-            <label className="btn-file-import" style={{ padding: "6px 12px", fontSize: "12px", height: "32px", display: "inline-flex", alignItems: "center", cursor: "pointer" }}>
-              <FileJson size={14} /> Import JSON
-              <input type="file" accept=".json" onChange={handleImportJSON} style={{ display: "none" }} />
-            </label>
-
-            {/* Export Dropdown Group */}
+            {/* Minimal Suite Actions (Import/Export) Supermenu */}
             <div style={{ position: "relative" }}>
               <button
                 type="button"
-                className="btn-primary"
-                onClick={() => setExportDropdownOpen(!exportDropdownOpen)}
-                style={{ height: "32px", padding: "6px 12px", fontSize: "12px" }}
+                className="btn-file-import"
+                onClick={() => setSuiteActionsOpen(!suiteActionsOpen)}
+                style={{ height: "32px", padding: "6px 12px", fontSize: "12px", display: "inline-flex", alignItems: "center", gap: "6px" }}
               >
-                Export Suite <ChevronDown size={14} />
+                <span>Import / Export</span>
+                <ChevronDown size={14} />
               </button>
 
-              {exportDropdownOpen && (
+              {suiteActionsOpen && (
                 <>
                   {/* Backdrop click-to-close handler */}
                   <div
-                    onClick={() => setExportDropdownOpen(false)}
+                    onClick={() => setSuiteActionsOpen(false)}
                     style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 100 }}
                   />
                   <div
@@ -400,17 +358,51 @@ export default function App() {
                       borderRadius: "var(--radius-md)",
                       boxShadow: "0 4px 12px rgba(14, 15, 12, 0.08)",
                       zIndex: 101,
+                      width: "180px",
+                      padding: "8px 0",
                       display: "flex",
                       flexDirection: "column",
-                      width: "160px",
-                      padding: "4px 0",
                     }}
                   >
+                    {/* Import Section */}
+                    <div style={{ padding: "4px 12px 2px", fontSize: "10px", color: "var(--color-mute)", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                      Import
+                    </div>
+                    <label
+                      style={{
+                        padding: "8px 12px",
+                        textAlign: "left",
+                        width: "100%",
+                        background: "none",
+                        border: "none",
+                        color: "var(--color-ink)",
+                        fontSize: "12px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        justifyContent: "flex-start",
+                        margin: 0,
+                        fontWeight: 600,
+                      }}
+                      className="dropdown-item"
+                    >
+                      <FileJson size={13} />
+                      <span>Import JSON</span>
+                      <input type="file" accept=".json" onChange={(e) => { handleImportJSON(e); setSuiteActionsOpen(false); }} style={{ display: "none" }} />
+                    </label>
+
+                    <div style={{ height: "1px", backgroundColor: "#f0f0f0", margin: "6px 0" }} />
+
+                    {/* Export Section */}
+                    <div style={{ padding: "4px 12px 2px", fontSize: "10px", color: "var(--color-mute)", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                      Export
+                    </div>
                     <button
                       type="button"
                       onClick={() => {
                         handleExportJSON();
-                        setExportDropdownOpen(false);
+                        setSuiteActionsOpen(false);
                       }}
                       style={{
                         padding: "8px 12px",
@@ -428,13 +420,14 @@ export default function App() {
                       }}
                       className="dropdown-item"
                     >
-                      <FileJson size={13} /> JSON Format
+                      <FileJson size={13} />
+                      <span>JSON Format</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => {
                         handleExportMD();
-                        setExportDropdownOpen(false);
+                        setSuiteActionsOpen(false);
                       }}
                       style={{
                         padding: "8px 12px",
@@ -452,13 +445,14 @@ export default function App() {
                       }}
                       className="dropdown-item"
                     >
-                      <FileText size={13} /> Markdown Report
+                      <FileText size={13} />
+                      <span>Markdown Report</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => {
                         handleExportXLSX();
-                        setExportDropdownOpen(false);
+                        setSuiteActionsOpen(false);
                       }}
                       style={{
                         padding: "8px 12px",
@@ -476,7 +470,8 @@ export default function App() {
                       }}
                       className="dropdown-item"
                     >
-                      <Table size={13} /> Excel Sheet
+                      <Table size={13} />
+                      <span>Excel Sheet</span>
                     </button>
                   </div>
                 </>
@@ -493,6 +488,78 @@ export default function App() {
             >
               <Plus size={14} /> New Chat
             </button>
+
+            {/* User Profile Dropdown (Extreme Rightmost) */}
+            {currentUser && (
+              <div style={{ position: "relative" }}>
+                <button
+                  type="button"
+                  onClick={() => setUserProfileOpen(!userProfileOpen)}
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    backgroundColor: "var(--color-primary-pale)",
+                    color: "var(--color-primary)",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid #dcdfd9"
+                  }}
+                  title={`Logged as: ${currentUser}`}
+                >
+                  <User size={16} />
+                </button>
+                {userProfileOpen && (
+                  <>
+                    <div
+                      onClick={() => setUserProfileOpen(false)}
+                      style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 100 }}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        right: 0,
+                        top: "38px",
+                        backgroundColor: "var(--color-canvas)",
+                        border: "1px solid #dcdfd9",
+                        borderRadius: "var(--radius-md)",
+                        boxShadow: "0 4px 12px rgba(14, 15, 12, 0.08)",
+                        zIndex: 101,
+                        padding: "12px",
+                        minWidth: "180px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px"
+                      }}
+                    >
+                      <div style={{ fontSize: "11px", color: "var(--color-mute)", textTransform: "uppercase", fontWeight: 600 }}>Logged In As</div>
+                      <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--color-ink)", wordBreak: "break-word" }}>{currentUser}</div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleSwitchUser();
+                          setUserProfileOpen(false);
+                        }}
+                        style={{
+                          width: "100%",
+                          padding: "6px 10px",
+                          fontSize: "12px",
+                          borderRadius: "var(--radius-xl)",
+                          backgroundColor: "var(--color-canvas-soft)",
+                          color: "var(--color-primary)",
+                          textAlign: "center",
+                          marginTop: "4px"
+                        }}
+                      >
+                        Switch User
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

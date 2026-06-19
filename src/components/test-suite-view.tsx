@@ -8,7 +8,6 @@ interface TestSuiteViewProps {
   selectedId: string | null;
   onSelect: (id: string) => void;
   onAddTestCase: () => void;
-  onRegenerate: () => void;
 
   searchTerm: string;
   setSearchTerm: (val: string) => void;
@@ -28,7 +27,6 @@ export const TestSuiteView: React.FC<TestSuiteViewProps> = ({
   selectedId,
   onSelect,
   onAddTestCase,
-  onRegenerate,
   searchTerm,
   setSearchTerm,
   selectedCategory,
@@ -71,17 +69,14 @@ export const TestSuiteView: React.FC<TestSuiteViewProps> = ({
 
   return (
     <div className="test-suite-view">
-      <div className="sidebar-header">
-        <div className="quick-actions">
-          <button onClick={onAddTestCase} className="btn-primary flex-center" title="Create New Test Case">
-            <Plus size={16} /> New Test
-          </button>
-          <button onClick={onRegenerate} className="btn-secondary text-xs" title="Reset suite to default generated ones">
-            Reset Suite
-          </button>
-        </div>
+      <div className="sidebar-header" style={{ padding: "20px", borderBottom: "1px solid #dcdfd9" }}>
+        <h2 style={{ fontSize: "20px", fontWeight: 900, fontFamily: "var(--font-display)", letterSpacing: "-0.02em", margin: 0 }}>
+          Cyberwall AI Example chats
+        </h2>
+        <p style={{ fontSize: "12px", color: "var(--color-mute)", marginTop: "4px" }}>
+          Kerala Police Cyber Suite
+        </p>
       </div>
-
       {/* Filter and Search Section */}
       <div className="search-filter-section">
         <div className="search-box">
@@ -202,9 +197,16 @@ export const TestSuiteView: React.FC<TestSuiteViewProps> = ({
         {filteredTestCases.length === 0 && (
           <div className="no-results-state">
             <AlertTriangle size={24} />
-            <p>No test cases matching filters.</p>
+            <p>No chat examples matching filters.</p>
           </div>
         )}
+      </div>
+
+      {/* Sidebar Footer with New Chat Example button */}
+      <div className="sidebar-footer" style={{ padding: "16px", borderTop: "1px solid #dcdfd9" }}>
+        <button onClick={onAddTestCase} style={{ width: "100%" }} className="btn-primary flex-center" title="Create New Chat Example">
+          <Plus size={16} /> New Chat Example
+        </button>
       </div>
     </div>
   );

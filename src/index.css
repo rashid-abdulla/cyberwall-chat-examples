@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@700;800;900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Noto+Sans+Malayalam:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
   /* Indigo & Light Blue Design System Palette */
@@ -28,9 +28,10 @@
   --color-accent-cyan: #38c8ff;
 
   /* Font Families */
-  --font-display: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'DM Mono', monospace;
+  --font-body: 'DM Mono', monospace;
   --font-mono: 'DM Mono', monospace;
+  --font-sans: 'Noto Sans', 'Noto Sans Malayalam', sans-serif;
 
   /* Border Radii */
   --radius-none: 0px;
@@ -277,7 +278,7 @@ select.form-control {
 .search-filter-section {
   padding: 16px;
   border-bottom: 1px solid #dcdfd9;
-  background-color: var(--color-canvas-soft); /* Subtle contrast */
+  background-color: transparent; /* Inherits white from sidebar */
 }
 .search-box {
   position: relative;
@@ -641,6 +642,7 @@ select.form-control {
 }
 
 .bubble-content-text p {
+  font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.5;
   word-break: break-word;
@@ -662,8 +664,7 @@ select.form-control {
   border-radius: var(--radius-md); /* 12px rounded input */
   color: var(--color-ink);
   padding: 12px;
-  font-size: 14px;
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   resize: vertical;
   outline: none;
 }
