@@ -2,7 +2,10 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { put, list } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
-import initialTests from '../data/generated-tests.json';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const initialTests = require('../data/generated-tests.json');
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const hasBlobToken = !!process.env.BLOB_READ_WRITE_TOKEN;
