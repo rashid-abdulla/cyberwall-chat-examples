@@ -1,4 +1,4 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { put, list } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
@@ -71,7 +71,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         
         if (usersBlob) {
           const fetchRes = await fetch(usersBlob.url);
-          users = await fetchRes.json();
+          users = await fetchRes.json() as string[];
         }
 
         if (name.toLowerCase() !== 'ai generated' && !users.includes(name)) {
