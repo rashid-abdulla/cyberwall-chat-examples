@@ -170,6 +170,13 @@ export default function App() {
     );
   };
 
+  // Update a specific test case's fields entirely
+  const handleUpdateTestCase = (id: string, updatedTestCase: TestCase) => {
+    setTestCases((prev) =>
+      prev.map((tc) => (tc.id === id ? { ...updatedTestCase, author: currentUser || "Unknown User" } : tc))
+    );
+  };
+
   // Add a new test case
   const handleAddTestCase = () => {
     const prefix = "CUSTOM";
@@ -609,6 +616,7 @@ export default function App() {
                   testCase={tc}
                   onChange={(updatedChat) => handleUpdateChat(tc.id, updatedChat)}
                   onDelete={() => handleDeleteTestCase(tc.id)}
+                  onUpdateTestCase={(updatedTestCase) => handleUpdateTestCase(tc.id, updatedTestCase)}
                 />
               ))}
             </div>

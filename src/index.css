@@ -959,4 +959,24 @@ select.form-control {
   margin-bottom: 8px;
 }
 
+/* Editable Title styling */
+.editable-title {
+  position: relative;
+  transition: color var(--transition-fast);
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+  margin-left: -4px;
+}
+.editable-title:hover {
+  background-color: var(--color-canvas-soft);
+  color: var(--color-primary);
+}
+.editable-title .edit-title-icon {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+.editable-title:hover .edit-title-icon {
+  opacity: 1;
+}
+
 

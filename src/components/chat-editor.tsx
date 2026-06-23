@@ -6,16 +6,39 @@ interface ChatEditorProps {
   testCase: TestCase;
   onChange: (updatedChat: ChatMessage[]) => void;
   onDelete: () => void;
+  onUpdateTestCase?: (updatedTestCase: TestCase) => void;
 }
 
 export const ChatEditor: React.FC<ChatEditorProps> = ({
   testCase,
   onChange,
   onDelete,
+  onUpdateTestCase,
 }) => {
   const chat = testCase.chat;
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editText, setEditText] = useState("");
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [titleText, setTitleText] = useState(testCase.objective);
+
+  React.useEffect(() => {
+    setTitleText(testCase.objective);
+  }, [testCase.objective]);
+
+  const handleSaveTitle = () => {
+    if (titleText.trim() && onUpdateTestCase) {
+      onUpdateTestCase({
+        ...testCase,
+        objective: titleText.trim(),
+      });
+    }
+    setIsEditingTitle(false);
+  };
+
+  const handleCancelTitle = () => {
+    setTitleText(testCase.objective);
+    setIsEditingTitle(false);
+  };
 
   const handleStartEdit = (index: number, content: string) => {
     setEditingIndex(index);
@@ -83,9 +106,76 @@ export const ChatEditor: React.FC<ChatEditorProps> = ({
       <div className="chat-editor-header" style={{ display: "flex", flexDirection: "column", gap: "12px", borderBottom: "1px solid #dcdfd9", paddingBottom: "16px", marginBottom: "20px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", width: "100%", gap: "16px" }}>
           <div>
-            <h3 style={{ fontFamily: "var(--font-display)", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+            <h3 style={{ fontFamily: "var(--font-display)", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
               <span className="font-mono" style={{ color: "var(--color-ink)", opacity: 0.7 }}>{testCase.id}</span>
-              <span>{testCase.objective}</span>
+              {isEditingTitle ? (
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={titleText}
+                    onChange={(e) => setTitleText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleSaveTitle();
+                      if (e.key === "Escape") handleCancelTitle();
+                    }}
+                    autoFocus
+                    style={{
+                      height: "30px",
+                      fontSize: "14px",
+                      padding: "4px 8px",
+                      flex: 1,
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 600,
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSaveTitle}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "var(--color-positive)",
+                      cursor: "pointer",
+                      padding: "4px",
+                      display: "flex",
+                      alignItems: "center"
+                    }}
+                    title="Save Title"
+                  >
+                    <Check size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelTitle}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "var(--color-negative)",
+                      cursor: "pointer",
+                      padding: "4px",
+                      display: "flex",
+                      alignItems: "center"
+                    }}
+                    title="Cancel"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <span 
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", cursor: "pointer" }}
+                  onClick={() => {
+                    setTitleText(testCase.objective);
+                    setIsEditingTitle(true);
+                  }}
+                  title="Click to edit chat title"
+                  className="editable-title"
+                >
+                  {testCase.objective}
+                  <Edit2 size={12} style={{ opacity: 0.5, color: "var(--color-primary)" }} className="edit-title-icon" />
+                </span>
+              )}
             </h3>
             <p style={{ fontSize: "12px", color: "var(--color-body)", marginTop: "4px" }}>Category: {testCase.category}</p>
           </div>
