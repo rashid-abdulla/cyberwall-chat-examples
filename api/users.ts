@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { put, list } from '@vercel/blob';
+import { put, list, get } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
 
@@ -27,14 +27,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const { blobs } = await list();
         const usersBlob = blobs.find(b => b.pathname === 'users.json');
         if (usersBlob) {
-          const fetchRes = await fetch(usersBlob.url);
-          const users = await fetchRes.json();
-          return res.status(200).json(users);
+          const getResult = await get(usersBlob.url, { access: 'private' });
+          if (getResult && getResult.stream) {
+            const response = new Response(getResult.stream);
+            const users = await response.json();
+            return res.status(200).json(users);
+          } else {
+            const defaultUsers = ["Rashid (Nysaclan)", "Navneeth (Nysaclan)"];
+            return res.status(200).json(defaultUsers);
+          }
         } else {
           // Initialize Blob
           const defaultUsers = ["Rashid (Nysaclan)", "Navneeth (Nysaclan)"];
           await put('users.json', JSON.stringify(defaultUsers, null, 2), {
-            access: 'public',
+            access: 'private',
             addRandomSuffix: false,
             allowOverwrite: true,
           });
@@ -70,14 +76,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         let users = ["Rashid (Nysaclan)", "Navneeth (Nysaclan)"];
         
         if (usersBlob) {
-          const fetchRes = await fetch(usersBlob.url);
-          users = await fetchRes.json() as string[];
+          const getResult = await get(usersBlob.url, { access: 'private' });
+          if (getResult && getResult.stream) {
+            const response = new Response(getResult.stream);
+            users = await response.json() as string[];
+          }
         }
 
         if (name.toLowerCase() !== 'ai generated' && !users.includes(name)) {
           users.push(name);
           await put('users.json', JSON.stringify(users, null, 2), {
-            access: 'public',
+            access: 'private',
             addRandomSuffix: false,
             allowOverwrite: true,
           });

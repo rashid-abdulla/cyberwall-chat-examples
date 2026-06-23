@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { put, list } from '@vercel/blob';
+import { put, list, get } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
 import { createRequire } from 'module';
@@ -25,13 +25,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const { blobs } = await list();
         const testsBlob = blobs.find(b => b.pathname === 'generated-tests.json');
         if (testsBlob) {
-          const fetchRes = await fetch(testsBlob.url);
-          const tests = await fetchRes.json();
-          return res.status(200).json(tests);
+          const getResult = await get(testsBlob.url, { access: 'private' });
+          if (getResult && getResult.stream) {
+            const response = new Response(getResult.stream);
+            const tests = await response.json();
+            return res.status(200).json(tests);
+          } else {
+            return res.status(200).json(initialTests);
+          }
         } else {
           // If no blob exists, upload initial bundle
           await put('generated-tests.json', JSON.stringify(initialTests, null, 2), {
-            access: 'public',
+            access: 'private',
             addRandomSuffix: false,
             allowOverwrite: true,
           });
@@ -60,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       } else {
         // Vercel Blob path
         await put('generated-tests.json', JSON.stringify(data, null, 2), {
-          access: 'public',
+          access: 'private',
           addRandomSuffix: false,
           allowOverwrite: true,
         });
