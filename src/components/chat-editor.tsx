@@ -105,7 +105,7 @@ export const ChatEditor: React.FC<ChatEditorProps> = ({
     <div className="chat-editor" id={`tc-card-${testCase.id}`}>
       <div className="chat-editor-header" style={{ display: "flex", flexDirection: "column", gap: "12px", borderBottom: "1px solid #dcdfd9", paddingBottom: "16px", marginBottom: "20px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", width: "100%", gap: "16px" }}>
-          <div>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <h3 style={{ fontFamily: "var(--font-display)", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
               <span className="font-mono" style={{ color: "var(--color-ink)", opacity: 0.7 }}>{testCase.id}</span>
               {isEditingTitle ? (
