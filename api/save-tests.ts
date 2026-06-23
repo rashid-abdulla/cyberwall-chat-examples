@@ -8,7 +8,7 @@ const require = createRequire(import.meta.url);
 const initialTests = require('../data/generated-tests.json');
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const hasBlobToken = !!process.env.BLOB_READ_WRITE_TOKEN;
+  const hasBlobToken = !!process.env.BLOB_READ_WRITE_TOKEN || !!process.env.BLOB_STORE_ID || !!process.env.VERCEL;
 
   if (req.method === 'GET') {
     try {
