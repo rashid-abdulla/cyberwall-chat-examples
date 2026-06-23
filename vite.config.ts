@@ -60,25 +60,42 @@ export default defineConfig({
                 res.end(JSON.stringify({ error: (error as any).message }));
               }
             });
-          } else if (req.method === 'POST' && req.url === '/api/save-tests') {
-            let body = '';
-            req.on('data', (chunk) => {
-              body += chunk;
-            });
-            req.on('end', () => {
+          } else if (req.url === '/api/save-tests') {
+            if (req.method === 'GET') {
               try {
-                const data = JSON.parse(body);
                 const filePath = path.join(__dirname, 'data/generated-tests.json');
-                fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+                const content = fs.readFileSync(filePath, 'utf-8');
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify({ success: true }));
+                res.end(content);
               } catch (error) {
                 res.statusCode = 500;
                 res.setHeader('Content-Type', 'application/json');
                 res.end(JSON.stringify({ error: (error as any).message }));
               }
-            });
+            } else if (req.method === 'POST') {
+              let body = '';
+              req.on('data', (chunk) => {
+                body += chunk;
+              });
+              req.on('end', () => {
+                try {
+                  const data = JSON.parse(body);
+                  const filePath = path.join(__dirname, 'data/generated-tests.json');
+                  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(JSON.stringify({ success: true }));
+                } catch (error) {
+                  res.statusCode = 500;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(JSON.stringify({ error: (error as any).message }));
+                }
+              });
+            } else {
+              res.statusCode = 405;
+              res.end();
+            }
           } else {
             next();
           }

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { TestCase } from "./models/test-case";
 import { TestSuiteView } from "./components/test-suite-view";
 import { ChatEditor } from "./components/chat-editor";
@@ -17,12 +17,38 @@ export default function App() {
 
   // Save status state
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error" | "">("saved");
-  const isFirstRender = useRef(true);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Fetch test cases on mount
+  useEffect(() => {
+    fetch("/api/save-tests")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setTestCases(data);
+          if (data.length > 0) {
+            setSelectedId((prev) => {
+              if (prev && data.some((tc) => tc.id === prev)) {
+                return prev;
+              }
+              return data[0].id;
+            });
+          }
+        }
+        setIsLoaded(true);
+      })
+      .catch((err) => {
+        console.error("Error loading test cases, falling back to static initialTests:", err);
+        setIsLoaded(true); // Allow editing and saving to fallback
+      });
+  }, []);
 
   // Autosave effect (debounced)
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
+    if (!isLoaded) {
       return;
     }
 
@@ -48,7 +74,7 @@ export default function App() {
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [testCases]);
+  }, [testCases, isLoaded]);
 
   // User session state
   const [currentUser, setCurrentUser] = useState<string | null>(() => {
