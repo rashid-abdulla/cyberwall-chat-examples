@@ -33,6 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           await put('generated-tests.json', JSON.stringify(initialTests, null, 2), {
             access: 'public',
             addRandomSuffix: false,
+            allowOverwrite: true,
           });
           return res.status(200).json(initialTests);
         }
@@ -61,6 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         await put('generated-tests.json', JSON.stringify(data, null, 2), {
           access: 'public',
           addRandomSuffix: false,
+          allowOverwrite: true,
         });
         return res.status(200).json({ success: true });
       }

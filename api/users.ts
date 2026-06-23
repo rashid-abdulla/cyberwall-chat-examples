@@ -36,6 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           await put('users.json', JSON.stringify(defaultUsers, null, 2), {
             access: 'public',
             addRandomSuffix: false,
+            allowOverwrite: true,
           });
           return res.status(200).json(defaultUsers);
         }
@@ -78,6 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           await put('users.json', JSON.stringify(users, null, 2), {
             access: 'public',
             addRandomSuffix: false,
+            allowOverwrite: true,
           });
         }
         return res.status(200).json({ success: true, users });
